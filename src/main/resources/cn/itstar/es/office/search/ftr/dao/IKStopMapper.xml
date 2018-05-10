@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itstar.es.office.search.ftr.dao.IKStopMapper">
+
+	<select id="listForPage" resultType="IKStopEntity" flushCache="true">
+		SELECT
+			i.ik_stop_id,
+			i.ik_stop_name,
+			i.user_id_create,
+			i.user_id_update,
+			(
+				SELECT
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = i.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = i.user_id_update
+			) AS userNameUpdate,
+			i.status,
+			i.gmt_create,
+			i.gmt_modified
+		FROM
+			sys_ik_stop i
+		<where>
+			<if test="userNameCreate != null">
+				AND i.userNameCreate = #{userNameCreate} 
+			</if>
+			<if test="userNameUpdate != null">
+				AND i.userNameUpdate = #{userNameUpdate} 
+			</if>
+			<if test="ikStopName != null and ikStopName.trim() != ''">
+				AND i.ik_stop_name LIKE concat('%',#{ikStopName},'%') 
+			</if>
+		</where>
+		ORDER BY 
+			i.gmt_modified DESC
+	</select>
+	
+	
+	<select id="getByIKStopName" resultType="IKStopEntity">
+		SELECT
+			ik_stop_id,
+			ik_stop_name,
+			user_id_create,
+			user_id_update,
+			(
+				SELECT 
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = user_id_update
+			) AS userNameUpdate,
+			status,
+			gmt_create,
+			gmt_modified
+		FROM
+			sys_ik_stop
+		WHERE
+			ik_stop_name = #{ikStopName}
+	</select>
+	
+	
+	<insert id="save" parameterType="IKStopEntity" useGeneratedKeys="true" keyProperty="ikStopId">
+		INSERT INTO sys_ik_stop (
+			ik_stop_id,
+			ik_stop_name,
+			user_id_create,
+			user_id_update,
+			status,
+			gmt_create,
+			gmt_modified
+		)
+		VALUES (
+			#{ikStopId},
+			#{ikStopName},
+			#{userIdCreate},
+			#{userIdUpdate},
+			#{status},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<select id="getObjectById" resultType="IKStopEntity">
+		SELECT
+			i.ik_stop_id,
+			i.ik_stop_name,
+			i.user_id_create,
+			i.user_id_update,
+			(
+				SELECT 
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = i.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = i.user_id_update
+			) AS userNameUpdate,
+			i.status,
+			i.gmt_create,
+			i.gmt_modified
+		FROM
+			sys_ik_stop i
+		WHERE
+			i.ik_stop_id = #{value}
+	</select>
+	
+	<update id="update">
+		UPDATE sys_ik_stop
+		<set> 
+			<if test="ikStopName != null">ik_stop_name = #{ikStopName}, </if>
+			<if test="userIdCreate != null">user_id_create = #{userIdCreate}, </if>
+			<if test="userIdUpdate != null">user_id_update = #{userIdUpdate}, </if>
+			<if test="status != null">status = #{status}, </if>
+			<if test="gmtCreate != null">gmt_create = #{gmtCreate}, </if>
+			gmt_modified = NOW()
+		</set>
+		where ik_stop_id = #{ikStopId}
+	</update>
+	
+	<delete id="batchRemove">
+		DELETE
+		FROM
+			sys_ik_stop
+		WHERE
+			ik_stop_id IN
+		<foreach item="ikStopId" collection="array" open="(" separator="," close=")">
+			#{ikStopId}
+		</foreach>
+	</delete>
+	
+	<update id="updateIKStopStatus">
+		UPDATE sys_ik_stop
+		SET
+			status = #{status}
+		WHERE
+			ik_stop_id IN
+		<foreach item="ikStopId" collection="id" open="(" separator="," close=")">
+			#{ikStopId}
+		</foreach> 
+	</update>
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+</mapper>

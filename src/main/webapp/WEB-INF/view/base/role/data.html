@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('数据权限-角色管理')"></head>
+<body>
+	<div id="dpLTE" class="container-fluid" v-cloak>
+		<ul id="dbTree" class="ztree"></ul>
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script type="text/javascript">
+	var setting = {
+		data : {
+			simpleData : {
+				enable : true,
+				idKey : "dataId",
+				pIdKey : "parentId",
+				rootPId : 0
+			},
+			key : {
+				url : "nourl"
+			}
+		},
+		check:{
+	        enable:true,
+	        nocheckInherit:true,
+	        chkboxType:{ "Y" : "", "N" : "" }
+	    }
+	};
+	var ztree;
+
+	var vm = new Vue({
+		el : '#dpLTE',
+		data : {
+			role : {}
+		},
+		methods : {
+			getDb : function(menuId) {
+                $.ajax({
+                    type: 'get',
+                    async: false,
+                    contentType : 'application/json',
+                    url: '../../sys/data/list?_' + $.now(),
+                    data: null,
+                    success: function(r) {
+                        ztree = $.fn.zTree
+                            .init($("#dbTree"), setting, r);
+                        ztree.expandAll(true);
+                    },
+                    dataType: 'json'
+                });
+			},
+			setForm: function() {
+                this.getDb();
+				$.SetForm({
+					url: '../../sys/role/info',
+			    	param: vm.role.roleId,
+			    	success: function(data) {
+			    		vm.role = data;
+			    		//勾选角色所拥有的数据权限
+		    			var dataIds = vm.role.dataPrivilegeIdList;
+		    			for(var i=0; i<dataIds.length; i++) {
+		    				var node = ztree.getNodeByParam("dataId", dataIds[i]);
+		    				ztree.checkNode(node, true, false);
+		    			}
+			    	}
+				});
+			},
+			acceptClick: function() {
+				var nodes = ztree.getCheckedNodes(true);
+				var dataPrivilegeIdList = new Array();
+				for(var i=0; i<nodes.length; i++) {
+					dataPrivilegeIdList.push(nodes[i].dataId);
+				}
+				vm.role.dataPrivilegeIdList = dataPrivilegeIdList;
+				$.ConfirmForm({
+			    	url: '../../sys/role/authorize/data?_' + $.now(),
+			    	param: vm.role,
+			    	success: function(data) {
+			    		
+			    	}
+			    });
+			}
+		}
+	})
+	</script>
+</body>
+</html>

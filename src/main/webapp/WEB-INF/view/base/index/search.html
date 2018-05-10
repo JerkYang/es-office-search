@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('索引检索')"></head>
+<style>
+	#row>form>ol>li>a{
+		text-decoration: underline;
+		margin-bottom: 15px;
+		font-size:18px;
+	}
+	#index span{
+		color: #4D9A61;
+	}
+	#index p{
+		margin: 0;
+		padding: 0;
+	}
+	#index p span{
+		color: black;
+	}
+	.content{
+		font-size:12px;
+		line-height:1.5;
+	}
+	.container-fluid{
+		width: 80%;
+		margin-left: 0;
+	} 
+</style>
+<body>
+<div id="dpLTE" class="container-fluid" v-cloak>
+	<div class="row">
+		<div class="col-md-4 form-inline pull-left">
+			<!-- <div class="form-group"> -->
+			<span class="input-group-btn">
+		    	<!-- <input v-model="page.keyword" @keyup.enter="search" class="form-control" placeholder="请输入查询关键字" style="width: 220px;" /> -->
+		    	<input id="kw" type="text" class="form-control" placeholder="请输入查询关键词" v-model="page.keyword" @keyup.enter="search" baiduSug="1" style="width:437px;height: 40px" maxlength="100">
+			<!-- </div> -->
+			</span>
+			<!-- <div class="form-group"> -->
+			<span class="input-group-btn">
+			   <!--  <a class="btn btn-primary" @click="search"><i class="fa fa-search"></i>&nbsp;查询</a> -->
+			   <input type="button" class="btn" value="星搜" @click="search" style="width:84px;height: 40px" />
+			<!-- </div> -->
+			</span>
+		</div>
+		<div class="col-md-8">
+			<div class="btn-toolbar pull-right">
+				<div class="btn-group">
+		            <a v-bind:href="menu" class="btn btn-primary" ><i class="fa fa-windows"></i>&nbsp;后台</a>
+		        </div>
+	        </div>
+		</div>
+	</div>
+	<div id="row" class="row" style="margin-top: 10px;margin-left: 20px">
+		<form id="form" action="" enctype="multipart/form-data">
+			<ol>
+				<li v-for="file in fileList" style="margin-top: 10px">
+					<a href="javascript:void(0)" v-html="file.fileName" @click="download(file.fileId)"></a>
+					<div id="index">
+						<span>创建人</span>
+		          		<span v-html="file.userNameCreate"></span>
+		          		<span>&nbsp;&nbsp;&nbsp;</span>
+						<span>创建日期</span>
+		          		<span v-html="file.gmtCreate"></span>
+		          		<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span>修改人</span>
+		          		<span v-html="file.userNameUpdate"></span>
+		          		<span>&nbsp;&nbsp;&nbsp;</span>
+						<span>修改日期</span>
+						<span v-html="file.gmtModified"></span>
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span>文件级别</span>
+						<span v-html="file.fileLevelName"></span>
+						<br>
+						<span>文件路径</span>
+		          		<span>
+		          			<a href="javascript:void(0)" @click="download(file.fileId)" v-html="file.filePath"></a>
+		          		</span>
+		          		<p class="content">内容简介
+		          			<span v-html="file.contentText"></span>...
+		          		</p>
+		          	</div>
+		          	<br>
+				</li>
+			</ol>
+		</form>
+	</div>
+</div>
+<div id="page_box" v-if="fileList" style="margin-left: 40px">
+	<div id="paging"></div>
+</div>
+<div th:include="include/footer_js::footer"></div>
+<script charset="gbk" src="http://www.baidu.com/js/opensug.js"></script>
+<script th:src="@{/statics/js/base/index/search.js}"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itstar.es.office.search.ftr.dao.IKWordMapper">
+
+	<select id="listForPage" resultType="IKWordEntity" flushCache="true">
+		SELECT
+			iw.ik_word_id,
+			iw.ik_word_name,
+			iw.user_id_create,
+			iw.user_id_update,
+			(
+				SELECT
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = iw.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = iw.user_id_update
+			) AS userNameUpdate,
+			iw.status,
+			iw.gmt_create,
+			iw.gmt_modified
+		FROM
+			sys_ik_word iw
+		<where>
+			<if test="userNameCreate != null">
+				AND iw.userNameCreate = #{userNameCreate} 
+			</if>
+			<if test="userNameUpdate != null">
+				AND iw.userNameUpdate = #{userNameUpdate} 
+			</if>
+			<if test="ikWordName != null and ikWordName.trim() != ''">
+				AND iw.ik_word_name LIKE concat('%',#{ikWordName},'%') 
+			</if>
+		</where>
+		ORDER BY 
+			iw.gmt_modified DESC
+	</select>
+	
+	<select id="getByIKWordName" resultType="IKWordEntity">
+		SELECT
+			ik_word_id,
+			ik_word_name,
+			user_id_create,
+			user_id_update,
+			(
+				SELECT 
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = user_id_update
+			) AS userNameUpdate,
+			status,
+			gmt_create,
+			gmt_modified,
+		FROM
+			sys_ik_word
+		WHERE
+			ik_word_name = #{ikKordName}
+	</select>
+	
+	
+	<insert id="save" parameterType="IKWordEntity" useGeneratedKeys="true" keyProperty="ikWordId">
+		INSERT INTO sys_ik_word (
+			ik_word_id,
+			ik_word_name,
+			user_id_create,
+			user_id_update,
+			status,
+			gmt_create,
+			gmt_modified
+		)
+		VALUES (
+			#{ikWordId},
+			#{ikWordName},
+			#{userIdCreate},
+			#{userIdUpdate},
+			#{status},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<select id="getObjectById" resultType="IKWordEntity">
+		SELECT
+			iw.ik_word_id,
+			iw.ik_word_name,
+			iw.user_id_create,
+			iw.user_id_update,
+			(
+				SELECT 
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = iw.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = iw.user_id_update
+			) AS userNameUpdate,
+			iw.status,
+			iw.gmt_create,
+			iw.gmt_modified
+		FROM
+			sys_ik_word iw
+		WHERE
+			iw.ik_word_id = #{value}
+	</select>
+	
+	<update id="update">
+		UPDATE sys_ik_word
+		<set> 
+			<if test="ikWordName != null">ik_word_name = #{ikWordName}, </if>
+			<if test="userIdCreate != null">user_id_create = #{userIdCreate}, </if>
+			<if test="userIdUpdate != null">user_id_update = #{userIdUpdate}, </if>
+			<if test="status != null">status = #{status}, </if>
+			<if test="gmtCreate != null">gmt_create = #{gmtCreate}, </if>
+			gmt_modified = NOW()
+		</set>
+		where ik_word_id = #{ikWordId}
+	</update>
+	
+	<delete id="batchRemove">
+		DELETE
+		FROM
+			sys_ik_word
+		WHERE
+			ik_word_id IN
+		<foreach item="ikWordId" collection="array" open="(" separator="," close=")">
+			#{ikWordId}
+		</foreach>
+	</delete>
+	
+	<update id="updateIKWordStatus">
+		UPDATE sys_ik_word
+		SET
+			status = #{status}
+		WHERE
+			ik_word_id IN
+		<foreach item="ikWordId" collection="id" open="(" separator="," close=")">
+			#{ikWordId}
+		</foreach> 
+	</update>
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+</mapper>

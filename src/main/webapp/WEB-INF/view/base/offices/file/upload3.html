@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('新增-文件管理')"></head>
+<body>
+	<div id="uploader" class="wu-example">
+		<!--用来存放文件信息-->
+		<div id="thelist" class="uploader-list"></div>
+		<div class="btns">
+			<div id="picker">选择文件</div>
+			<button id="ctlBtn" class="btn btn-default">开始上传</button>
+		</div>
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/offices/add.js}"></script>
+	<script>
+	//初始化Web Uploader
+    var uploader = WebUploader.create({
+		// 选完文件后，是否自动上传
+        auto: false,
+        // swf文件路径
+        swf: '/statics/plugins/webuploader/swf/Uploader.swf',     // swf文件路径
+        server: 'http://localhost:8080/es-office-search/sys/offices/save.action',                    // 文件接收服务端。
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#picker',              //'#'+but                       // 选择文件的按钮。可选。
+        /* 
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'jpg,png',
+            mimeTypes: 'image/*'
+        }
+         */
+        
+        accept: {  
+            title: 'Files',  
+            extensions: 'pdf,doc,docx',
+            mimeTypes: 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'  
+                       +',application/pdf'  
+        },
+        fileNumLimit: 10,                              //最大上传数量为10
+        fileSingleSizeLimit: 20 * 1024 * 1024,         //限制上传单个文件大小20M
+        fileSizeLimit: 200 * 1024 * 1024,              //限制上传所有文件大小200M
+        resize: false                                  // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+    });
+
+    //上传前的判断处理
+    /**
+     * 验证文件格式以及文件大小
+     */
+    uploader.on('error', function( type ){
+        if ( type === 'Q_EXCEED_NUM_LIMIT' ) {
+            layer.msg('最多允许上传10份xxx');
+        } 
+        if ( type === 'F_DUPLICATE' ) {
+            layer.msg('xxx重复，不能上传！');
+        }
+        if (type=="Q_TYPE_DENIED"){
+            layer.msg("请上传doc、pdf格式文件");
+        }else if(type=="F_EXCEED_SIZE"){
+            layer.msg("文件大小不能超过20M");
+        }
+    });
+
+    // 当有文件被添加进队列的时候
+    var $list = $("#uploader");
+    uploader.on( 'fileQueued', function( file ) {
+        $list.append( '<div id="' + file.id + '" class="item">' +
+            '<h4 class="info">' + file.name + '</h4>' +
+            '<p class="state">等待上传...</p>' + 
+            '<a class="webuploadDelbtn">删除</a><br/>' +
+        '</div>' );
+    });
+
+    //点击开始上传
+     $("#ctlBtn").on( 'click', function() {  
+         uploader.upload();  
+     });
+
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+        var $li = $( '#'+file.id ),
+            $percent = $li.find('.progress .progress-bar');
+
+        // 避免重复创建
+        if ( !$percent.length ) {
+            $percent = $('<div class="progress progress-striped active">' +
+              '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+              '</div>' +
+            '</div>').appendTo( $li ).find('.progress-bar');
+        }
+        $li.find('p.state').text('上传中');
+
+        $percent.css( 'width', percentage * 100 + '%' );
+    });
+
+
+    //文件成功、失败处理
+    uploader.on( 'uploadSuccess', function( file ) {
+        $( '#'+file.id ).find('p.state').text('已上传');
+        $( '#'+file.id ).find('a.webuploadDelbtn').remove();
+    });
+    //上传错误
+    uploader.on( 'uploadError', function( file ) {
+        $( '#'+file.id ).find('p.state').text('上传出错');
+    });
+    //上传完成
+    uploader.on( 'uploadComplete', function( file ) {
+        $( '#'+file.id ).find('.progress').fadeOut();
+    });
+
+    //删除
+    $list.on("click", ".webuploadDelbtn", function () {
+        var $ele = $(this);
+        var id = $ele.parent().attr("id");
+        var file = uploader.getFile(id);
+        uploader.removeFile(file,true);  
+    }); 
+
+    //删除时执行的方法
+    uploader.on('fileDequeued', function (file) {
+        $(file.id).remove();
+        $('#'+file.id ).find('span.state').text('已经取消');
+        $('#'+file.id).hide();   
+        console.log("remove");     
+    }); 
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>浙江中烟文件管理系统</title>
+	<!-- <meta content=always name=referrer> -->
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="statics/css/bootstrap.min.css">
+  <link rel="stylesheet" href="statics/css/font-awesome.min.css">
+  <link rel="stylesheet" href="statics/css/style.min.css">
+  <link rel="stylesheet" href="statics/css/common.min.css">
+<style>
+/*这里修改提示框的字体样式*/
+.bdSug_wpr {
+	color: black;
+}
+</style>
+</head>
+<body>
+	<div id="dpLTE">
+		<div class="form-inline input-group" style="margin-top: 200px;margin-left: 400px">
+			<span class="input-group-btn">
+				<input id="kw" type="text" class="form-control" placeholder="请输入查询关键词" v-model="keyword" @keyup.enter="query" baiduSug="1" style="width:537px;height: 40px" maxlength="100">
+				<span class="input-group-btn">
+					<input type="button" class="btn" value="星搜" @click="query" style="width:104px;height: 40px" />
+					<a v-bind:href="menu" class="btn btn-primary" style="width:104px;height: 40px;line-height: 25px"><i class="fa fa-windows"></i>&nbsp;后台</a>
+				</span>
+			</span>
+		</div>
+</div>
+<script charset="gbk" src="http://www.baidu.com/js/opensug.js"></script>
+<script src="statics/libs/jquery.min.js"></script>
+<script src="statics/libs/vue.min.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#dpLTE',
+	data:{
+		keyword : null,
+		page: {
+			keyword : null,
+			count : '',
+			curr : 1,
+			index : '',
+			limit : 10,
+			pages : '',
+			first : 1
+		},
+		menu: 'index.html'
+	},
+	watch: {
+		keyword(val){
+			if(null != val) {
+				parent.location.href ='base/index/search.html?keyword=' + val;
+			}
+		}
+	},
+	methods: {
+		main: function () {
+			parent.location.href ='base/index/index.html';
+		},
+		query: function (query) {
+			$.ajax({
+	            //几个参数需要注意一下
+                type: "post",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: 'sys/index/query?_' + $.now(),//url
+                data: JSON.stringify(vm.page),
+        		contentType : 'application/json',
+                success: function (result) {
+                	parent.location.href ='base/index/search.html';
+                }
+            });
+		}
+	}
+});
+</script>
+</body>
+</html>

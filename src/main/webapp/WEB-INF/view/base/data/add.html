@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('新增-数据权限管理')"></head>
+<body>
+	<div id="dpLTE" class="container-fluid" v-cloak>
+		<table class="form" id="form">
+			<tr>
+	            <td class="formTitle">数据权限名称<font face="宋体">*</font></td>
+	            <td class="formValue">
+					<input type="text" class="form-control" placeholder="数据权限名称" v-model="db.name" isvalid="yes" checkexpession="NotNull">
+	            </td>
+        	</tr>
+        	<tr>
+	            <td class="formTitle">数据权限编码<font face="宋体">*</font></td>
+	            <td class="formValue">
+					<input type="text" class="form-control" placeholder="数据权限编码" v-model="db.code" isvalid="yes" checkexpession="NotNull">
+	            </td>
+        	</tr>
+        	<tr>
+	            <td class="formTitle">上级数据权限<font face="宋体">*</font></td>
+	            <td class="formValue">
+					<input type="text" class="form-control pointer" placeholder="一级数据权限" v-model="db.parentName" @click="dbTree" isvalid="yes" checkexpession="NotNull" readonly="readonly">
+	            </td>
+        	</tr>
+        	<tr>
+	            <td class="formTitle">排序</td>
+	            <td class="formValue">
+					<input type="text" class="form-control" placeholder="排序" v-model="db.orderNum">
+	            </td>
+        	</tr>
+        	<tr>
+				<td class="formTitle">可用</td>
+				<td class="formValue">
+					<label class="radio-inline">
+						<input type="radio" name="status" value="0" v-model="db.status"/> 禁用
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="1" v-model="db.status"/> 正常
+					</label>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/data/add.js}"></script>
+</body>
+</html>

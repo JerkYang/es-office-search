@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('新增-文件管理')"></head>
+<body>
+	<script>
+		$(function() {
+			$("#uploader").powerWebUpload({
+				auto : false,
+				fileNumLimit : 5
+			});
+		})
+		function GetFiles1() {
+			var data = $("#uploader").GetFilesAddress();
+			alert(data[0])
+		}
+	</script>
+	<div id="uploader" style="margin-left:10px"></div>
+	<input type="button" value="获取列表" onclick="GetFiles1()" />
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/offices/add.js}"></script>
+</body>
+</html>

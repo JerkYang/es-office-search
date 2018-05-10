@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('新增-文件管理')"></head>
+<body>
+	<div id="upload-box"></div>  
+	<div class="col-lg-2">  
+	    <button id="upload" type="button" class="btn btn-info"><i class="fa fa-upload"></i> 上传</button>  
+	</div>
+	<!-- <div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/offices/add.js}"></script> -->
+	<script>
+	var uploader = $('#upload-box').uploader({  
+      
+    server: root +'file/uploadPic',     // 上传文件接口  
+    deleteServer:'',                    // 删除文件接口  
+    md5Server:'',                       // md5秒传验证接口  
+    isRealTimeDelete:false,             // 删除已上传的文件，是否需要实时删除，true则需要提供删除文件接口  
+//  eventAddFileErrorCustom:true,  
+    //添加文件出错  
+//  addFileError:function(type,arg1,arg2){  
+//      console.log('addFileError')  
+//  },  
+    //在添加文件前执行true或无返回值则放过,false则不放过  
+    beforeFileQueued:function(file){  
+        console.log('beforeFileQueued')  
+        console.log(file)  
+        return true;//false 不添加  
+    },  
+    //当有文件被添加进队列的时候执行  
+    fileQueued:function(file){  
+        console.log('fileQueued')  
+        console.log(file)  
+    },  
+    //文件上传过程中创建进度条实时显示  
+    uploadProgress:function(file, percentage){  
+        console.log(file);  
+        console.log(percentage);  
+        console.log('uploadProgress')  
+    },  
+    //文件上传成功  
+    uploadSuccess:function(file, response){  
+        console.log(file);  
+        console.log(response);  
+        console.log('uploadSuccess')  
+    },  
+    //文件上传失败  
+    uploadError:function(file){  
+        console.log(file);  
+        console.log('uploadError')  
+    },  
+    //文件全部上传成功  
+    uploadFinished:function(file,data){  
+        console.log(file);  
+        console.log(data);  
+        console.log('uploadFinished');  
+    }  
+});  
+  
+$('#upload').on('click',function(){  
+    uploader.upload();  
+})  
+	</script>
+</body>
+</html>

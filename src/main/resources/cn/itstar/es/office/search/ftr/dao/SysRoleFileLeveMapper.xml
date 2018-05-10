@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.itstar.es.office.search.ftr.dao.SysRoleFileLeveMapper">
+	
+	<insert id="save">
+		INSERT INTO sys_role_file_level (
+			role_id,
+			file_level_id
+		)
+		VALUES
+		<foreach collection="fileLevelIdList" item="item" index="index" separator="," >
+		(
+			#{roleId}, 
+			#{item} 
+		)
+		</foreach>
+	</insert>
+	
+	<!-- 根据角色 ID 查询出与之相关的文件级别 -->
+	<select id="listFileLevelByRoleId" resultType="long">
+		SELECT
+			file_level_id
+		FROM
+			sys_role_file_level
+		WHERE
+			role_id = #{id}
+	</select>
+	
+	<delete id="batchRemoveByFileLevelId">
+		DELETE
+		FROM
+			sys_role_file_level
+		WHERE
+			file_level_id IN 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="batchRemoveByRoleId">
+		DELETE
+		FROM
+			sys_role_file_level
+		WHERE
+			role_id IN 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<delete id="remove">
+		DELETE
+		FROM 
+			sys_role_file_level
+		WHERE 
+			role_id = #{value}
+	</delete>
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+</mapper>

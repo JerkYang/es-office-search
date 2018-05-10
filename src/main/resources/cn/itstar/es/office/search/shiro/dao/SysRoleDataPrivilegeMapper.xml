@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.itstar.es.office.search.shiro.dao.SysRoleDataPrivilegeMapper">
+	
+	<insert id="save">
+		INSERT INTO sys_role_data_privilege (
+			role_id,
+			data_id
+		)
+		VALUES
+		<foreach collection="dataPrivilegeIdList" item="item" index="index" separator="," >
+		(
+			#{roleId}, 
+			#{item}
+		)
+		</foreach>
+	</insert>
+	
+	<select id="listDataPrivilegeId" resultType="long">
+		SELECT
+			data_id
+		FROM
+			sys_role_data_privilege
+		WHERE
+			role_id = #{id}
+	</select>
+	
+	<delete id="batchRemoveByDataPrivilegeId">
+		DELETE
+		FROM
+			sys_role_data_privilege
+		WHERE
+			data_id IN 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="batchRemoveByRoleId">
+		DELETE
+		FROM
+			sys_role_data_privilege
+		WHERE
+			role_id IN 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<delete id="remove">
+		DELETE
+		FROM 
+			sys_role_data_privilege
+		WHERE 
+			role_id = #{value}
+	</delete>
+	
+	<!-- 根据用户ID查询出用户角色进而查询文件级别，最后有关所有信息 -->
+	<select id="listDataPrivilegeByUserId" resultType="SysDataPrivilegeEntity">
+		<!-- SELECT
+			dp.data_id,
+			dp.parent_id,
+			(
+				SELECT
+					p.name
+				FROM
+					sys_data_privilege p
+				WHERE
+					p.data_id = dp.parent_id
+			) AS parentName,
+			dp.code,
+			dp.name,
+			dp.order_num,
+			dp.status
+		FROM
+			sys_data_privilege dp
+		WHERE
+			dp.data_id IN
+			(
+				SELECT
+					DISTINCT rp.data_id
+				FROM
+					sys_role_data_privilege rp
+				WHERE
+					rp.role_id in
+					(
+						SELECT
+							u.role_id
+						FROM
+							sys_user_role u
+						WHERE
+							u.user_id = #{id}
+					)
+			)
+		ORDER BY
+				dp.order_num ASC -->
+		SELECT DISTINCT
+			dp.data_id,
+			dp.parent_id,
+			(
+				SELECT
+					p.name
+				FROM
+					sys_data_privilege p
+				WHERE
+					p.data_id = dp.parent_id
+			) AS parentName,
+			dp.code,
+			dp.name,
+			dp.order_num,
+			dp.status
+		FROM
+			sys_user_role ur
+		LEFT JOIN sys_role_data_privilege rp ON ur.role_id = rp.role_id
+		LEFT JOIN sys_data_privilege dp ON rp.data_id = dp.data_id
+		WHERE
+			ur.user_id = #{id}
+	</select>
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+</mapper>

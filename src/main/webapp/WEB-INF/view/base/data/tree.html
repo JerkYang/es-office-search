@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('上级数据权限')"></head>
+<body>
+	<div id="dpLTE" class="container-fluid" v-cloak>
+		<ul id="dbTree" class="ztree"></ul>
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script type="text/javascript">
+	var setting = {
+		data : {
+			simpleData : {
+				enable : true,
+				idKey : "dataId",
+				pIdKey : "parentId",
+				rootPId : -1
+			},
+			key : {
+				url : "nourl"
+			}
+		}
+	};
+	var ztree;
+
+	var vm = new Vue({
+		el : '#dpLTE',
+		methods : {
+			getMenu : function(menuId) {
+				$.get('../../sys/data/select', function(r) {
+					ztree = $.fn.zTree
+							.init($("#dbTree"), setting, r);
+					var node = ztree.getNodeByParam("dataId", top.layerForm.vm.db.parentId);
+					ztree.selectNode(node);
+					top.layerForm.vm.db.parentName = node.name;
+				})
+			},
+			acceptClick: function() {
+				var node = ztree.getSelectedNodes();
+				top.layerForm.vm.db.parentId = node[0].dataId;
+				top.layerForm.vm.db.parentName = node[0].name;
+				dialogClose();
+			}
+		},
+		created : function() {
+			this.getMenu();
+		}
+	})
+	</script>
+</body>
+</html>

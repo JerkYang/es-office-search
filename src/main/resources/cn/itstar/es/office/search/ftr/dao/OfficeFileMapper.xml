@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itstar.es.office.search.ftr.dao.OfficeFileMapper">
+
+	<select id="listForPage" resultType="OfficeFileEntity" flushCache="true">
+		SELECT
+			o.file_id,
+			o.file_name,
+			o.file_path,
+			o.user_id_create,
+			o.user_id_update,
+			(
+				SELECT
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_update
+			) AS userNameUpdate,
+			o.file_level_id,
+			(
+				SELECT 
+					name 
+				FROM 
+					sys_data_privilege dp
+				WHERE 
+					dp.data_id = o.file_level_id
+			) AS fileLevelName,
+			o.status,
+			o.gmt_create,
+			o.gmt_modified,
+			o.content_text
+		FROM
+			sys_office o
+		<!-- <where>
+			<if test="userNameCreate != null">
+				AND o.user_name_create = #{userNameCreate} 
+			</if>
+			<if test="userNameUpdate != null">
+				AND o.user_name_update = #{userNameUpdate} 
+			</if>
+			<if test="username != null and username.trim() != ''">
+				AND u.username LIKE concat('%',#{username},'%') 
+				OR u.office_name LIKE concat('%',#{username},'%') 
+				OR u.office_level LIKE concat('%',#{username},'%') 
+			</if>
+		</where> -->
+		<!-- ORDER BY 
+			o.gmt_modified DESC -->
+	</select>
+	
+	<!-- 根据文件级别分页查询  -->
+	<select id="listForPageByFileLevel" resultType="OfficeFileEntity" flushCache="true">
+		SELECT
+			o.file_id,
+			o.file_name,
+			o.file_path,
+			o.user_id_create,
+			o.user_id_update,
+			(
+				SELECT
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_update
+			) AS userNameUpdate,
+			o.file_level_id,
+			(
+				SELECT 
+					name 
+				FROM 
+					sys_data_privilege dp
+				WHERE 
+					dp.data_id = o.file_level_id
+			) AS fileLevelName,
+			o.status,
+			o.gmt_create,
+			o.gmt_modified,
+			o.content_text
+		FROM
+			sys_office o
+		<where>
+			<if test="userNameCreate != null">
+				AND o.user_name_create = #{userNameCreate} 
+			</if>
+			<if test="userNameUpdate != null">
+				AND o.user_name_update = #{userNameUpdate} 
+			</if>
+			<if test="username != null and username.trim() != ''">
+				AND u.username LIKE concat('%',#{username},'%') 
+				OR u.file_name LIKE concat('%',#{username},'%') 
+			</if>
+			<if test="ids != null">
+				AND o.file_level_id IN
+				<foreach item="id" collection="ids" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</if>
+		</where>
+		ORDER BY 
+			o.gmt_modified DESC
+	</select>
+	
+	<select id="getByOfficeFileName" resultType="OfficeFileEntity">
+		SELECT
+			file_id,
+			file_name,
+			file_path,
+			user_id_create,
+			user_id_update,
+			(
+				SELECT 
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = user_id_update
+			) AS userNameUpdate,
+			o.file_level_id,
+			(
+				SELECT 
+					name 
+				FROM 
+					sys_data_privilege dp
+				WHERE 
+					dp.data_id = o.file_level_id
+			) AS fileLevelName,
+			status,
+			gmt_create,
+			gmt_modified,
+			content_text
+		FROM
+			sys_office
+		WHERE
+			file_name = #{officeName}
+	</select>
+	
+	
+	<insert id="save" parameterType="OfficeFileEntity" useGeneratedKeys="true" keyProperty="fileId">
+		INSERT INTO sys_office (
+			file_id,
+			file_name,
+			file_path,
+			user_id_create,
+			user_id_update,
+			file_level_id,
+			status,
+			gmt_create,
+			gmt_modified,
+			content_text
+		)
+		VALUES (
+			#{fileId},
+			#{fileName},
+			#{filePath},
+			#{userIdCreate},
+			#{userIdUpdate},
+			#{fileLevelId},
+			#{status},
+			NOW(),
+			NOW(),
+			#{contentText}
+		)
+	</insert>
+	
+	<select id="getObjectById" resultType="OfficeFileEntity">
+		SELECT
+			o.file_id,
+			o.file_name,
+			o.file_path,
+			o.user_id_create,
+			o.user_id_update,
+			(
+				SELECT 
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_update
+			) AS userNameUpdate,
+			o.file_level_id,
+			(
+				SELECT 
+					name 
+				FROM 
+					sys_data_privilege dp
+				WHERE 
+					dp.data_id = o.file_level_id
+			) AS fileLevelName,
+			o.status,
+			o.gmt_create,
+			o.gmt_modified,
+			o.content_text
+		FROM
+			sys_office o
+		WHERE
+			o.file_id = #{value}
+	</select>
+	
+	<update id="update">
+		UPDATE sys_office
+		<set> 
+			<if test="fileName != null">file_name = #{fileName}, </if>
+			<if test="filePath != null">file_path = #{filePath}, </if>
+			<if test="userIdCreate != null">user_id_create = #{userIdCreate}, </if>
+			<if test="userIdUpdate != null">user_id_update = #{userIdUpdate}, </if>
+			<if test="fileLevelId != null">file_level_id = #{fileLevelId}, </if>
+			<if test="status != null">status = #{status}, </if>
+			<if test="gmtCreate != null">gmt_create = #{gmtCreate}, </if>
+			gmt_modified = NOW(),
+			<if test="contentText != null">content_text = #{contentText} </if>
+		</set>
+		where file_id = #{fileId}
+	</update>
+	
+	<delete id="batchRemove">
+		DELETE
+		FROM
+			sys_office
+		WHERE
+			file_id IN
+		<foreach item="fileId" collection="array" open="(" separator="," close=")">
+			#{fileId}
+		</foreach>
+	</delete>
+	
+	<update id="updateOfficeFileStatus">
+		UPDATE sys_office
+		SET
+			status = #{status}
+		WHERE
+			file_id IN
+		<foreach item="fileId" collection="id" open="(" separator="," close=")">
+			#{fileId}
+		</foreach> 
+	</update>
+	
+	<!-- 根据文件修改日期查询  -->
+	<select id="listOfficeFileByGmtDayModified" resultType="OfficeFileEntity" flushCache="true">
+		SELECT
+			o.file_id,
+			o.file_name,
+			o.file_path,
+			o.user_id_create,
+			o.user_id_update,
+			(
+				SELECT
+					username
+					
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_create
+			) AS userNameCreate,
+			(
+				SELECT 
+					username 
+				FROM 
+					sys_user user 
+				WHERE 
+					user.user_id = o.user_id_update
+			) AS userNameUpdate,
+			o.file_level_id,
+			(
+				SELECT 
+					name 
+				FROM 
+					sys_data_privilege dp
+				WHERE 
+					dp.data_id = o.file_level_id
+			) AS fileLevelName,
+			o.status,
+			o.gmt_create,
+			o.gmt_modified,
+			o.content_text
+		FROM
+			sys_office o
+		<where>
+			<!-- <if test="userNameCreate != null">
+				AND o.user_name_create = #{userNameCreate} 
+			</if>
+			<if test="userNameUpdate != null">
+				AND o.user_name_update = #{userNameUpdate} 
+			</if>
+			<if test="username != null and username.trim() != ''">
+				AND u.username LIKE concat('%',#{username},'%') 
+				OR u.file_name LIKE concat('%',#{username},'%') 
+			</if>
+			<if test="ids != null">
+				AND o.file_level_id IN
+				<foreach item="id" collection="ids" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</if> -->
+			<!-- gmt_modified >= (
+				SELECT
+					DATE_SUB(NOW(), INTERVAL '1' DAY)
+			)
+			AND gmt_modified < (
+				SELECT
+					DATE_ADD(NOW(), INTERVAL '1' DAY)
+			); -->
+			gmt_modified BETWEEN (
+				SELECT
+					DATE_SUB(NOW(), INTERVAL '1' DAY)
+			)
+			AND (
+				SELECT
+					DATE_ADD(NOW(), INTERVAL '1' DAY)
+			);
+
+		</where>
+	</select>
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	
+	
+<!-- 	<insert id="add" parameterType="cn.itstar.es.office.search.ftr.entity.OfficeFileEntity" useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="string">
+			select uuid()
+		</selectKey>
+		insert into t_offile(id, file_name, file_path, content_text, status, create_person, update_person, create_at, update_at) 
+			values(#{id}, #{fileName}, #{filePath}, #{contentText}, #{status}, #{createPerson.id}, #{updatePerson.id}, #{createAt}, #{updateAt})
+	</insert>
+
+	<update id="update" parameterType="cn.itstar.es.office.search.ftr.entity.OfficeFileEntity">
+		update t_offile set file_name=#{fileName}, file_path=#{filePath}, content_text=#{contentText}, status=#{status}, create_person=#{createPerson.id}, update_person=#{updatePerson.id}, create_at=#{createAt}, update_at=#{updateAt} 
+			where t_offile.id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.String">
+		delete from t_offile where id=#{id}
+	</delete>
+
+	<select id="getById" parameterType="java.lang.String" resultMap="officeUserMap">
+		select 
+				t_offile.*,
+				cretate_user.user_name createUser,
+				update_user.user_name updateUser
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				t_offile.id=#{id} and cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+	</select>
+
+	<select id="getByIds" parameterType="java.lang.String" resultMap="officeMap">
+		select 
+				t_offile.*,
+				cretate_user.user_name createUser,
+				update_user.user_name updateUser
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				t_offile.id in
+		<foreach collection="array" item="id" index="index" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		 and cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+	</select>
+
+	<select id="findAll" resultMap="officeUserMap">
+		select 
+				t_offile.*,
+				cretate_user.user_name createUser,
+				update_user.user_name updateUser
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+		select * from t_offile 
+	</select>
+	
+	<select id="getByPage" resultMap="officeUserMap">
+		select 
+				t_offile.*,
+				cretate_user.user_name createUser,
+				update_user.user_name updateUser
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				status=#{status} and cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+				limit #{start}, #{size}
+		select * from t_offile where status=#{status} limit #{start}, #{size}
+	</select>
+	
+	<select id="getAllFileByPage" resultMap="officeUserMap">
+		select 
+				t_offile.*,
+				cretate_user.user_name createUser,
+				update_user.user_name updateUser
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+		order by update_at desc
+		
+		limit #{start}, #{size}
+				
+		select * from t_offile limit #{start}, #{size}
+	</select>
+	
+	<select id="count" parameterType="int" resultType="int">
+		select count(t_offile.id)
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				status=#{status} and cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+		select count(id) from t_offile where status=#{status}
+	</select> 
+	
+	<select id="countWithoutStatus" resultType="int">
+		select count(t_offile.id)
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+		select count(id) from t_offile where status=#{status}
+	</select>
+	
+	<select id="queryFileByName" resultMap="officeUserMap">
+		select 
+				t_offile.*,
+				cretate_user.user_name createUser,
+				update_user.user_name updateUser
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+		<if test="fileName != null">
+				and t_offile.file_name like '%${fileName}%'
+		</if>
+		order by update_at desc
+		
+		limit #{start}, #{size}
+	</select>
+	
+	<select id="countByFileName" resultType="int">
+		select count(t_offile.id)
+		from
+				t_offile,
+				sys_user cretate_user,
+				sys_user update_user
+		where
+				cretate_user.id = t_offile.create_person and update_user.id = t_offile.update_person
+		<if test="fileName != null">
+				and t_offile.file_name like '%${fileName}%'
+		</if>
+		select count(id) from t_offile where status=#{status}
+	</select> -->
+	
+</mapper>

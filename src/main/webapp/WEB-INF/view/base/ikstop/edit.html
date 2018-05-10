@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('编辑-停用词管理')"></head>
+<body>
+	<div id="dpLTE" class="container-fluid" v-cloak>
+		<table class="form" id="form">
+			<tr>
+	            <td class="formTitle">停用词名称<font face="宋体">*</font></td>
+	            <td class="formValue">
+					<input type="text" class="form-control" placeholder="停用词名称" v-model="ikstop.ikStopName" isvalid="yes" checkexpession="NotNull">
+	            </td>
+        	</tr>
+        	<tr>
+				<td class="formTitle">状态</td>
+				<td class="formValue">
+					<label class="radio-inline">
+						<input type="radio" name="status" value="0" v-model="ikstop.status"/> 禁用
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="1" v-model="ikstop.status"/> 正常
+					</label>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/ikstop/edit.js}"></script>
+</body>
+</html>

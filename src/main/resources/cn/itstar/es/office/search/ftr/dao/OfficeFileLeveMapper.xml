@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.itstar.es.office.search.ftr.dao.OfficeFileLeveMapper">
+	
+	<insert id="save">
+		INSERT INTO sys_office_file_level (
+			file_level_id,
+			file_id
+			
+			
+		)
+		VALUES
+		<foreach collection="fileIdList" item="item" index="index" separator="," >
+		(
+			#{fileLevelId},
+			#{item}
+		)
+		</foreach>
+	</insert>
+	
+	<!-- 根据文件级别 ID 查询出与之相关的文件 ID -->
+	<select id="listFileId" resultType="long">
+		SELECT
+			file_id
+		FROM
+			sys_office_file_level
+		WHERE
+			file_level_id = #{id}
+	</select>
+	
+	<delete id="batchRemoveByFileLevelId">
+		DELETE
+		FROM
+			sys_office_file_level
+		WHERE
+			file_level_id IN 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="batchRemoveByfileId">
+		DELETE
+		FROM
+			sys_office_file_level
+		WHERE
+			file_id IN 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<delete id="remove">
+		DELETE
+		FROM 
+			sys_office_file_level
+		WHERE 
+			file_level_id = #{value}
+	</delete>
+
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+</mapper>

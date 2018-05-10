@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('编辑-文件管理')"></head>
+<body>
+	<div id="dpLTE" class="container-fluid" v-cloak>
+		<table class="form" id="form">
+			<tr>
+	            <td class="formTitle">文件名<font face="宋体">*</font></td>
+	            <td class="formValue">
+					<input type="text" class="form-control" placeholder="文件名" v-model="file.fileName" isvalid="yes" checkexpession="NotNull">
+	            </td>
+	        </tr>
+	        
+	        <tr>
+	            <td>
+		            <input id="fileLevelId" hidden="hidden" v-model="file.fileLevelId">
+	            </td>
+	        </tr>
+	        
+	        <tr>
+	            <td class="formTitle">文件级别<font face="宋体">*</font></td>
+	            <td class="formValue">
+					<input type="text" class="form-control pointer" placeholder="所属文件级别" v-model="file.fileLevelName" @click="levelTree" isvalid="yes" checkexpession="NotNull" readonly="readonly">
+	            </td>
+        	</tr>
+        	<tr>
+        		<td class="formTitle">重新上传<font face="宋体">*</font></td>
+        		<td>
+        			<input type="file" class="form-control" placeholder="重新选择上传文件" v-model="file.filePath" isvalid="yes" checkexpession="NotNull">
+        		</td>
+        	</tr>
+        	<tr>
+				<td class="formTitle">状态</td>
+				<td class="formValue">
+					<label class="radio-inline">
+						<input type="radio" name="status" value="0" v-model="file.status"/> 禁用
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="1" v-model="file.status"/> 正常
+					</label>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/offices/edit.js}"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('新增-文件管理')"></head>
+<body>
+	<div id="dpLTE" class="container-fluid" v-cloak>
+		<!-- <form class="layui-form" action="">
+			<div class="layui-inline" style="margin-top: -10px;margin-left: 30px">
+				<button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>
+			</div>
+			<div class="layui-inline">
+				<div class="layui-form-item" style="margin-top: 10px;margin-left: 200px">
+					<label class="layui-form-label" style="width: 100px">文件级别</label>
+					<div class="layui-input-block">
+						<select id="fileLevel" name="fileLevel" value="${file.fileLevel}" lay-filter="fileLevel">
+							<option value=""></option>
+							<option value="0">绝密</option>
+							<option value="1">机密</option>
+							<option value="2">秘密</option>
+							<option value="3">敏感</option>
+							<option value="4" selected="">公开</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline" style="margin-top: -10px">
+				<button type="button" class="layui-btn layui-btn-normal" id="testListAction">开始上传</button>
+			</div> -->
+			<form class="layui-form" action="">
+			<div class="layui-inline" style="margin-top: -10px;margin-left: 30px">
+				<button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>
+			</div>
+			<div class="layui-inline">
+				<div class="layui-form-item" style="margin-top: 15px;margin-left: 30px">
+					<label class="layui-form-label" style="width: 100px">文件级别</label>
+					<div class="layui-input-block">
+						<span class="formValue"><input type="text" class="form-control pointer" placeholder="文件级别" v-model="level.name" @click="levelTree" isvalid="yes" checkexpession="NotNull" readonly="readonly"></span>
+					</div>
+				</div>
+			</div>
+			<div class="layui-inline" style="margin-top: -10px;margin-left: 80px">
+				<button type="button" class="layui-btn layui-btn-normal" id="testListAction">开始上传</button>
+			</div>
+			<div class="layui-upload-list">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th>文件名</th>
+							<th>大小</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="demoList"></tbody>
+				</table>
+			</div>
+		</form>
+		<!-- <form id="upload" action="">
+			<table class="form" id="form">
+				<tr>
+		            <td class="formTitle">文件名<font face="宋体">*</font></td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="文件名" v-model="file.fileName" isvalid="yes" checkexpession="NotNull">
+		            </td>
+	        	</tr>
+				
+				<tr>
+		            <td class="formTitle">文件级别<font face="宋体">*</font></td>
+		            <td class="formValue">
+						<input type="text" class="form-control pointer" placeholder="文件级别" v-model="file.fileLevel" @click="orgTree" isvalid="yes" checkexpession="NotNull" readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+	        		<select v-model.lazy="resCity">
+ 						<option v-for="sc in scLists" v-bind:value="file.fileLevel">{{sc.cityname}}</option>
+					</select>
+					
+					<select v-model="list"> 
+						<option v-for="v in list">{{v.a}}-{{v.b}} </option>
+					</select> 
+	        		
+	        	</tr>
+	        	<div id="uploader" class="wu-example">
+					用来存放文件信息
+					<div id="thelist" class="uploader-list"></div>
+					<div class="btns">
+						<div id="picker">选择文件</div>
+						<button id="ctlBtn" class="btn btn-default">开始上传</button>
+					</div>
+				</div>
+				<tr>
+					<td class="formTitle">上传文件</td>
+					<td class="formValue">
+						<input type="file" name="uploadFile" class="form-control" placeholder="上传文件" isvalid="yes" checkexpession="NotNull">
+					</td>
+				</tr>
+				<tr>
+					<td class="formTitle">文件级别<font face="宋体">*</font></td>
+					<td class="formValue">
+						<select name="doublebox">
+							<option id="">绝密</option>
+							<option id="">绝密</option>
+							<option id="">绝密</option>
+							<option id="">绝密</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="formTitle">文件简介</td>
+					<td class="formValue">
+						<textarea class="form-control" placeholder="文件简介" isvalid="yes" checkexpession="NotNull"></textarea>
+						<input type="text" class="form-control" placeholder="文件简介" isvalid="yes" checkexpession="NotNull">
+					</td>
+				</tr>
+				<tr>
+					<td class="formTitle">文件状态</td>
+					<td class="formValue">
+						<label class="radio-inline">
+							<input type="radio" name="status" value="0" v-model="file.status"/> 禁用
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="status" value="1" v-model="file.status"/> 正常
+						</label>
+					</td>
+				</tr>
+			</table>
+		</form> -->
+	</div>
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/offices/add.js}"></script>
+</body>
+</html>

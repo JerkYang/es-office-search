@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header_css::header('视图-文件详情')"></head>
+<body>
+	<form id="downLoadForm" action="${pageContext.request.contextPath}/admin/index/downLoad" enctype="multipart/form-data">
+		<div id="dpLTE" class="container-fluid" v-cloak>
+			<table class="form" id="form">
+				<tr>
+		            <td class="formTitle">文件名</td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="文件名" v-model="file.fileName" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+		            <td class="formTitle">创建人</td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="创建人" v-model="file.userNameCreate" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+		            <td class="formTitle">更新人</td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="更新人" v-model="file.userNameUpdate" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+		            <td class="formTitle">文件级别</td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="文件级别" v-model="file.fileLevelName" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+		            <td class="formTitle">创建时间</td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="创建时间" v-model="file.gmtCreate" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+		            <td class="formTitle">更新时间</td>
+		            <td class="formValue">
+						<input type="text" class="form-control" placeholder="更新时间" v-model="file.gmtModified" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+	        	<tr>
+		            <td class="formTitle">文件路径</td>
+		            <td class="formValue">
+						<input type="text" class="form-control pointer" placeholder="更新时间" v-model="file.filePath" @click="downLoad" isvalid="yes" checkexpession="NotNull"  readonly="readonly">
+		            </td>
+	        	</tr>
+			</table>
+		</div>
+	</form>
+	<div th:include="include/footer_js::footer"></div>
+	<script th:src="@{/statics/js/base/index/view.js}"></script>
+	<script type="text/javascript">
+		/* function updateFileForm(obj) {
+			$('#mybtn').modal({
+				relatedTarget : obj,
+				onConfirm : function(options) {
+					location.href="${pageContext.request.contextPath}/admin/index/downLoad?" + str;
+				}
+			});
+	} */
+	</script>
+</body>
+</html>
